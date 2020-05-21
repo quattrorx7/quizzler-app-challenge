@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-//TODO: Step 2 - Import the rFlutter_Alert package here.
 import 'quiz_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 QuizBrain quizBrain = QuizBrain();
 
@@ -29,8 +29,15 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> {
-  List<Icon> scoreKeeper = [];
+  showBasicAlert(context) {
+    Alert(
+            context: context,
+            title: "RFLUTTER ALERT",
+            desc: "Flutter is more awesome with RFlutter Alert.")
+        .show();
+  }
 
+  List<Icon> scoreKeeper = [];
   void checkAnswer(bool userPickedAnswer) {
     bool correctAnswer = quizBrain.getCorrectAnswer();
 
@@ -42,23 +49,30 @@ class _QuizPageState extends State<QuizPage> {
       //TODO: Step 4 Part D - empty out the scoreKeeper.
 
       //TODO: Step 5 - If we've not reached the end, ELSE do the answer checking steps below 👇
-      if (userPickedAnswer == correctAnswer) {
-        scoreKeeper.add(Icon(
-          Icons.check,
-          color: Colors.green,
-        ));
+      if (quizBrain.isFinished() == false) {
+        if (userPickedAnswer == correctAnswer) {
+          scoreKeeper.add(Icon(
+            Icons.check,
+            color: Colors.green,
+          ));
+        } else {
+          scoreKeeper.add(Icon(
+            Icons.close,
+            color: Colors.red,
+          ));
+        }
+        quizBrain.nextQuestion();
       } else {
-        scoreKeeper.add(Icon(
-          Icons.close,
-          color: Colors.red,
-        ));
+        quizBrain.reset();
+        scoreKeeper = [];
+        showBasicAlert(context);
       }
-      quizBrain.nextQuestion();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    print(scoreKeeper);
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
